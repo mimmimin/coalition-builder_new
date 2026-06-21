@@ -136,23 +136,22 @@ const parties = [
   },
 ];
 
-const ParliamentBar = ({ parties }) => {
-  return (
-    <div className="flex h-8 rounded-lg overflow-hidden mb-4">
-      {parties.map((party) => {
-        const percentage = (party.seats / TOTAL_SEATS) * 100;
-        return (
-          <div
-            key={party.id}
-            className="h-full"
-            style={{ width: `${percentage}%`, backgroundColor: party.color }}
-            title={`${party.fullName} (${party.seats} seats)`}
-          />
-        );
-      })}
-    </div>
-  );
-};
+// === COMPONENTS ===
+const ParliamentBar = ({ parties }) => (
+  <div className="flex h-8 rounded-lg overflow-hidden mb-4">
+    {parties.map((party) => {
+      const percentage = (party.seats / TOTAL_SEATS) * 100;
+      return (
+        <div
+          key={party.id}
+          className="h-full"
+          style={{ width: `${percentage}%`, backgroundColor: party.color }}
+          title={`${party.fullName} (${party.seats} seats)`}
+        />
+      );
+    })}
+  </div>
+);
 
 const CoalitionBar = ({ coalitionSeats }) => {
   const percentage = (coalitionSeats / TOTAL_SEATS) * 100;
@@ -162,63 +161,33 @@ const CoalitionBar = ({ coalitionSeats }) => {
       <div className="flex-1 h-8 rounded-lg overflow-hidden relative">
         <div className="h-full bg-gray-200 w-full"></div>
         <div
-          className={`h-full absolute top-0 left-0 \${
+          className={`h-full absolute top-0 left-0 ${
             hasMajority ? "bg-green-500" : "bg-blue-500"
           }`}
           style={{ width: `${percentage}%` }}
-          title={`${coalitionSeats} seats`}
         />
       </div>
-      <span
-        className={`text-2xl font-bold \${
-          hasMajority ? "text-green-600" : "text-blue-600"
-        }`}
-      >
+      <span className={`text-2xl font-bold ${hasMajority ? "text-green-600" : "text-blue-600"}`}>
         {coalitionSeats}
       </span>
     </div>
   );
 };
 
-const PartyCard = ({
-  party,
-  selectedSubgroups,
-  onPartyClick,
-  onSubgroupToggle,
-  groupFilter,
-  expanded,
-}) => {
+const PartyCard = ({ party, selectedSubgroups, onPartyClick, onSubgroupToggle, groupFilter, expanded }) => {
   const partySubgroups = party.subgroups.filter(
-    (sg) =>
-      sg.name.toLowerCase().includes(groupFilter.toLowerCase()) ||
-      party.name.toLowerCase().includes(groupFilter.toLowerCase())
+    (sg) => sg.name.toLowerCase().includes(groupFilter.toLowerCase()) || party.name.toLowerCase().includes(groupFilter.toLowerCase())
   );
-
-  const allSelected = partySubgroups.every((sg) =>
-    selectedSubgroups.has(sg.name)
-  );
-  const partySeats = partySubgroups.reduce(
-    (sum, sg) => sum + sg.seats,
-    0
-  );
-  const selectedSeats = partySubgroups
-    .filter((sg) => selectedSubgroups.has(sg.name))
-    .reduce((sum, sg) => sum + sg.seats, 0);
+  const allSelected = partySubgroups.every((sg) => selectedSubgroups.has(sg.name));
+  const partySeats = partySubgroups.reduce((sum, sg) => sum + sg.seats, 0);
+  const selectedSeats = partySubgroups.filter((sg) => selectedSubgroups.has(sg.name)).reduce((sum, sg) => sum + sg.seats, 0);
 
   return (
     <div className="mb-4">
-      <div
-        className="flex items-center gap-3 p-3 rounded-lg bg-white shadow-sm border border-gray-200 cursor-pointer"
-        onClick={() => onPartyClick(party.id)}
-      >
-        <div
-          className="w-4 h-4 rounded-full"
-          style={{ backgroundColor: party.color }}
-        ></div>
+      <div className="flex items-center gap-3 p-3 rounded-lg bg-white shadow-sm border border-gray-200 cursor-pointer" onClick={() => onPartyClick(party.id)}>
+        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: party.color }}></div>
         <div className="flex-1">
-          <div className="font-medium text-gray-900">
-            {party.name} - {party.fullName}
-          </div>
+          <div className="font-medium text-gray-900">{party.name} - {party.fullName}</div>
           <div className="text-sm text-gray-500">{partySeats} seats total</div>
         </div>
         <div className="text-right">
@@ -227,12 +196,9 @@ const PartyCard = ({
         </div>
         <input
           type="checkbox"
-          className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          className="w-5 h-5 rounded border-gray-300 text-blue-600"
           checked={allSelected}
-          onChange={(e) => {
-            e.stopPropagation();
-            onPartyClick(party.id);
-          }}
+          onChange={(e) => { e.stopPropagation(); onPartyClick(party.id); }}
           onClick={(e) => e.stopPropagation()}
         />
       </div>
@@ -241,11 +207,163 @@ const PartyCard = ({
           {partySubgroups.map((subgroup) => {
             const isSelected = selectedSubgroups.has(subgroup.name);
             return (
-              <div
-                key={subgroup.name}
-                className="flex items-center justify-between p-2 bg-gray-50 rounded text-sm hover:bg-gray-100"
-              >
+              <div key={subgroup.name} className="flex items-center justify-between p-2 bg-gray-50 rounded text-sm hover:bg-gray-100">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="appearance-none w-4 h-4 border-2 border-gray-300 rounded cursor-pointer checked:bg-green-500 checked:border-green-500 checked:bg-[url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2020%2020%22%20fill=%22white%22%3E%3Cpath%20fill-rule=%22evenodd%22%20d=%22M16
+                    className="appearance-none w-4 h-4 border-2 border-gray-300 rounded cursor-pointer checked:bg-green-500 checked:border-green-500"
+                    checked={isSelected}
+                    onChange={() => onSubgroupToggle(party.id, subgroup.name, subgroup.seats)}
+                  />
+                  <span>{subgroup.name}</span>
+                </label>
+                <span className="font-medium text-gray-700">{subgroup.seats} seats</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const Summary = ({ coalitionSeats }) => {
+  const hasMajority = coalitionSeats >= MAJORITY_THRESHOLD;
+  return (
+    <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+      <h3 className="font-medium text-gray-900 mb-2">Coalition Summary</h3>
+      <div className="space-y-2">
+        <div className="flex justify-between text-sm">
+          <span>Total seats in coalition:</span>
+          <span className="font-bold">{coalitionSeats}</span>
+        </div>
+        <div className="flex justify-between text-sm">
+          <span>Majority threshold:</span>
+          <span className="font-bold">{MAJORITY_THRESHOLD}</span>
+        </div>
+        <div className="flex justify-between text-sm">
+          <span>Status:</span>
+          <span className={`font-bold ${hasMajority ? "text-green-600" : "text-red-500"}`}>
+            {hasMajority ? "✓ Majority achieved!" : "✗ No majority"}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// === MAIN APP ===
+const CoalitionBuilder = () => {
+  const [selectedSubgroups, setSelectedSubgroups] = useState(new Map());
+  const [groupFilter, setGroupFilter] = useState("");
+  const [expandedParties, setExpandedParties] = useState(new Set());
+
+  const coalitionSeats = Array.from(selectedSubgroups.values()).reduce((sum, sg) => sum + sg.seats, 0);
+
+  const toggleParty = (partyId) => {
+    const party = parties.find((p) => p.id === partyId);
+    if (!party) return;
+    const allSelected = party.subgroups.every((sg) => selectedSubgroups.has(sg.name));
+    setSelectedSubgroups((prev) => {
+      const newMap = new Map(prev);
+      if (allSelected) party.subgroups.forEach((sg) => newMap.delete(sg.name));
+      else party.subgroups.forEach((sg) => newMap.set(sg.name, sg));
+      return newMap;
+    });
+    setExpandedParties((prev) => {
+      const newSet = new Set(prev);
+      newSet.has(partyId) ? newSet.delete(partyId) : newSet.add(partyId);
+      return newSet;
+    });
+  };
+
+  const toggleSubgroup = (partyId, subgroupName, seats) => {
+    setSelectedSubgroups((prev) => {
+      const newMap = new Map(prev);
+      newMap.has(subgroupName) ? newMap.delete(subgroupName) : newMap.set(subgroupName, { name: subgroupName, seats });
+      return newMap;
+    });
+  };
+
+  const clearAll = () => {
+    setSelectedSubgroups(new Map());
+    setExpandedParties(new Set());
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto bg-gray-50 min-h-screen p-4 md:p-6">
+      <header className="mb-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">EU Parliament Coalition Builder</h1>
+            <p className="text-gray-600 mt-1">
+              Total seats: {TOTAL_SEATS} | Coalition: {coalitionSeats} seats
+              {coalitionSeats >= MAJORITY_THRESHOLD && <span className="ml-2 text-green-600 font-semibold">(Majority!)</span>}
+            </p>
+          </div>
+          <span className="text-sm bg-gray-200 text-gray-800 px-2 py-1 rounded-full self-start md:self-center">
+            Majority threshold: {MAJORITY_THRESHOLD} seats
+          </span>
+        </div>
+      </header>
+
+      <main className="space-y-6">
+        <section className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Parliament Composition</h2>
+          <ParliamentBar parties={parties} />
+        </section>
+
+        <section className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Your Coalition</h2>
+          <CoalitionBar coalitionSeats={coalitionSeats} />
+        </section>
+
+        <section className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-900">Select Parties & Subgroups</h2>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={groupFilter}
+                onChange={(e) => setGroupFilter(e.target.value)}
+                placeholder="Filter parties..."
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm w-64"
+              />
+              {groupFilter && (
+                <button onClick={() => setGroupFilter("")} className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-lg">
+                  ×
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="space-y-2">
+            {parties.map((party) => (
+              <PartyCard
+                key={party.id}
+                party={party}
+                selectedSubgroups={selectedSubgroups}
+                onPartyClick={toggleParty}
+                onSubgroupToggle={toggleSubgroup}
+                groupFilter={groupFilter}
+                expanded={expandedParties.has(party.id)}
+              />
+            ))}
+          </div>
+        </section>
+
+        <Summary coalitionSeats={coalitionSeats} />
+
+        <button onClick={clearAll} className="w-full p-3 border border-gray-300 rounded-lg text-sm bg-white hover:bg-gray-50 text-gray-700 font-medium">
+          Clear All
+        </button>
+      </main>
+    </div>
+  );
+};
+
+// === RENDER ===
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <CoalitionBuilder />
+  </React.StrictMode>
+);
