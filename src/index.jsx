@@ -275,3 +275,9 @@ const Summary = ({ coalitionSeats }) => {
   const hasMajority = coalitionSeats >= MAJORITY_THRESHOLD;
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm border border-gray
+
+      ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <CoalitionBuilder />
+  </React.StrictMode>
+);
