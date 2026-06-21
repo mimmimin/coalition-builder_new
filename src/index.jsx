@@ -1,12 +1,10 @@
-import "./index.css";
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
+import "./index.css";
 
-// ========== CONFIG ==========
 const TOTAL_SEATS = 720;
 const MAJORITY_THRESHOLD = 361;
 
-// ========== DATA ==========
 const parties = [
   {
     id: "epp",
@@ -138,7 +136,6 @@ const parties = [
   },
 ];
 
-// ========== COMPONENTS ==========
 const ParliamentBar = ({ parties }) => {
   return (
     <div className="flex h-8 rounded-lg overflow-hidden mb-4">
@@ -251,33 +248,4 @@ const PartyCard = ({
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="appearance-none w-4 h-4 border-2 border-gray-300 rounded cursor-pointer checked:bg-green-500 checked:border-green-500 checked:bg-[url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2020%2020%22%20fill=%22white%22%3E%3Cpath%20fill-rule=%22evenodd%22%20d=%22M16.707%205.293a1%201%200%20010%201.414l-8%208a1%201%200%2001-1.414%200l-4-4a1%201%200%20011.414-1.414L8%2012.586l7.293-7.293a1%201%200%20011.414%200z%22%20clip-rule=%22evenodd%22%20/%3E%3C/svg%3E')]"
-                    checked={isSelected}
-                    onChange={() =>
-                      onSubgroupToggle(party.id, subgroup.name, subgroup.seats)
-                    }
-                  />
-                  <span className="truncate">{subgroup.name}</span>
-                </label>
-                <span className="font-medium text-gray-700">
-                  {subgroup.seats} seats
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-};
-
-const Summary = ({ coalitionSeats }) => {
-  const hasMajority = coalitionSeats >= MAJORITY_THRESHOLD;
-  return (
-    <div className="bg-white rounded-lg p-4 shadow-sm border border-gray
-
-      ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <CoalitionBuilder />
-  </React.StrictMode>
-);
+                    className="appearance-none w-4 h-4 border-2 border-gray-300 rounded cursor-pointer checked:bg-green-500 checked:border-green-500 checked:bg-[url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2020%2020%22%20fill=%22white%22%3E%3Cpath%20fill-rule=%22evenodd%22%20d=%22M16
